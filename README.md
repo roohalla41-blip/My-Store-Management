@@ -55,3 +55,12 @@ The selected currency is currently a display preference. Historical transactions
 ## License
 
 No license has been added yet. Add an appropriate license before redistributing the project.
+
+
+## Access modes (current prototype)
+
+- The entry screen separates **استفاده رایگان** (local/offline mode) from **استفاده پولی** (planned online mode).
+- Free mode continues using the existing local browser storage key `a2_store_management_v1`; existing records are not deleted or renamed by the entry-screen change.
+- The online option is deliberately not presented as a working registration/login yet. Supabase is not configured, so it shows a clear notice rather than falsely claiming that accounts or data were saved to a server.
+- A service worker caches the static app after its first successful online visit so the interface can reopen offline. The browser must visit the site once while online first. Local browser/site data can still be removed by the device/browser, so use JSON backup regularly.
+- Connecting Supabase later requires a real authentication/data layer, access rules, and a tested import/merge path for any local JSON backups. Merely adding the Supabase URL is not enough to migrate local data safely.
