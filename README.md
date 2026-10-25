@@ -64,3 +64,11 @@ No license has been added yet. Add an appropriate license before redistributing 
 - The online option is deliberately not presented as a working registration/login yet. Supabase is not configured, so it shows a clear notice rather than falsely claiming that accounts or data were saved to a server.
 - A service worker caches the static app after its first successful online visit so the interface can reopen offline. The browser must visit the site once while online first. Local browser/site data can still be removed by the device/browser, so use JSON backup regularly.
 - Connecting Supabase later requires a real authentication/data layer, access rules, and a tested import/merge path for any local JSON backups. Merely adding the Supabase URL is not enough to migrate local data safely.
+
+
+## Store registration and currency (updated)
+
+- The first screen asks for store name, owner's first and last name, mobile number, and preferred currency.
+- In free mode, these details are saved into the existing local state while preserving the current storage key `a2_store_management_v1` and existing products, customers, suppliers, sales, and purchases.
+- Currency choices include Afghan afghani (AFN), toman, Iranian rial (IRR), US dollar (USD), and euro (EUR). The choice changes displayed currency labels only; it does not convert existing or future amounts between currencies.
+- Paid/online registration remains unavailable until real Supabase authentication and database access are configured. The form does not claim to create an online account.
