@@ -329,6 +329,8 @@
       const types={dashboard:"product",products:"product",inventory:"product",sales:"sale",purchases:"purchase",customers:"customer",suppliers:"supplier"};
       openForm(types[currentView]||"product");
     });
+    $("#dashboardShortcut").addEventListener("click",()=>setView("dashboard"));
+    $("#saleShortcut").addEventListener("click",()=>{setView("sales");openForm("sale");});
     $("#exportButton").addEventListener("click",exportData);
     $("#menuToggle").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
     $("#helpButton").addEventListener("click",()=>showToast("حالت رایگان: اطلاعات روی همین دستگاه است. پیش از پاک‌کردن داده‌های مرورگر، نسخه پشتیبان بگیرید."));
