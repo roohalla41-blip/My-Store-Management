@@ -7,8 +7,25 @@
   <meta name="description" content="سامانه حرفه‌ای مدیریت فروشگاه A2 برای مدیریت کالا، موجودی، فروش و مشتریان." />
   <title>A2 | مدیریت فروشگاه</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="manifest" href="./manifest.webmanifest" />
 </head>
 <body>
+  <section class="entry-screen" id="entryScreen" aria-labelledby="entryTitle">
+    <div class="entry-card">
+      <div class="entry-brand"><span class="brand-mark">A2</span><span><strong>مدیریت فروشگاه</strong><small>انتخاب روش استفاده</small></span></div>
+      <p class="eyebrow">خوش آمدید</p>
+      <h1 id="entryTitle">چگونه می‌خواهید وارد شوید؟</h1>
+      <p class="entry-description">روش استفاده را انتخاب کنید. اطلاعات استفادهٔ رایگان فعلاً روی همین دستگاه نگهداری می‌شود.</p>
+      <button type="button" class="entry-option" id="offlineEntryButton">
+        <span class="entry-option-icon">▣</span><span class="entry-option-copy"><strong>استفاده رایگان</strong><small>ورود آفلاین · ذخیره اطلاعات روی همین دستگاه</small></span><span class="entry-option-arrow">←</span>
+      </button>
+      <button type="button" class="entry-option paid" id="onlineEntryButton">
+        <span class="entry-option-icon">☁</span><span class="entry-option-copy"><strong>استفاده پولی</strong><small>ورود آنلاین · حساب کاربری و ذخیره در پایگاه داده</small></span><span class="entry-option-arrow">←</span>
+      </button>
+      <div class="entry-notice" id="onlineInfo" hidden role="status">اتصال Supabase هنوز تنظیم نشده است؛ ثبت‌نام آنلاین فعلاً فعال نیست. برای جلوگیری از گم‌شدن اطلاعات، تا زمان فعال‌شدن اتصال، از «استفاده رایگان» استفاده کنید و نسخهٔ پشتیبان بگیرید.</div>
+      <p class="entry-footnote">توجه: ورود آنلاین تا زمان اتصال واقعی به Supabase اطلاعات را روی سرور ذخیره نمی‌کند.</p>
+    </div>
+  </section>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#" aria-label="صفحه اصلی">
@@ -38,7 +55,7 @@
         <button class="icon-button mobile-menu" id="menuToggle" aria-label="باز کردن منو">☰</button>
         <div class="breadcrumbs"><span>فضای کاری</span><span class="crumb-sep">/</span><strong id="breadcrumbTitle">داشبورد</strong></div>
         <div class="topbar-actions">
-          <span class="system-status"><i></i>حالت آزمایشی محلی</span>
+          <span class="system-status" id="systemStatus"><i></i><span id="modeStatusText">حالت محلی</span></span><button class="icon-button" id="changeEntryMode" type="button" aria-label="تغییر روش ورود" title="تغییر روش ورود">⇄</button>
           <button class="icon-button" id="helpButton" aria-label="راهنما">؟</button>
           <div class="top-avatar">A</div>
         </div>
@@ -68,5 +85,6 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./app.js" defer></script>
+  <script>if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));</script>
 </body>
 </html>
