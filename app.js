@@ -69,15 +69,19 @@
     render();
     $("#sidebar").classList.remove("open");
   }
+  function iconSvg(symbol) {
+    const paths = {"↗":'<path d="M4 17 10 11l4 4 6-8"/><path d="M14 7h6v6"/>',"▤":'<path d="M4 5h16v15H4zM8 9h8M8 13h8M8 17h5"/>',"▥":'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',"!":'<path d="M12 3 22 21H2z"/><path d="M12 9v5m0 3h.01"/>',"↙":'<path d="M5 5v14h14M5 19 19 5"/>',"♙":'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',"◈":'<path d="m12 2 9 10-9 10L3 12z"/><path d="M12 7v10M8 12h8"/>',"＋":'<path d="M12 5v14M5 12h14"/>'};
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (paths[symbol] || paths["▤"]) + '</svg>';
+  }
   function statCard(title, value, icon, note, tone = "") {
-    return '<article class="stat-card"><div class="stat-top"><span>' + title + '</span><span class="stat-icon ' + tone + '">' + icon + '</span></div><div class="stat-value">' + value + '</div><div class="stat-foot">' + note + '</div></article>';
+    return '<article class="stat-card"><div class="stat-top"><span>' + title + '</span><span class="stat-icon ' + tone + '">' + iconSvg(icon) + '</span></div><div class="stat-value">' + value + '</div><div class="stat-foot">' + note + '</div></article>';
   }
   function productRows(products) {
     if (!products.length) return '<tr><td colspan="6"><div class="empty-state"><div style="font-size:26px">▤</div><strong>هنوز کالایی ثبت نشده است</strong><p>برای شروع، اولین کالای واقعی فروشگاه را ثبت کنید.</p></div></td></tr>';
     return products.map(product => {
       const stock = Number(product.stock) || 0;
       const status = stock <= 0 ? ["out", "ناموجود"] : stock <= (Number(product.minStock) || 5) ? ["low", "رو به اتمام"] : ["good", "موجود"];
-      return '<tr><td><div class="product-cell"><span class="product-thumb">▤</span><span class="product-name"><strong>' + esc(product.name) + '</strong><small>' + esc(product.sku || "بدون کد") + '</small></span></div></td><td>' + esc(product.category || "عمومی") + '</td><td>' + money(product.price) + '</td><td>' + number(stock) + ' ' + esc(product.unit || "عدد") + '</td><td><span class="status ' + status[0] + '">' + status[1] + '</span></td><td><button class="text-link" data-edit-product="' + esc(product.id) + '">ویرایش</button></td></tr>';
+      return '<tr><td><div class="product-cell"><span class="product-thumb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5z"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v9"/></svg></span><span class="product-name"><strong>' + esc(product.name) + '</strong><small>' + esc(product.sku || "بدون کد") + '</small></span></div></td><td>' + esc(product.category || "عمومی") + '</td><td>' + money(product.price) + '</td><td>' + number(stock) + ' ' + esc(product.unit || "عدد") + '</td><td><span class="status ' + status[0] + '">' + status[1] + '</span></td><td><button class="text-link" data-edit-product="' + esc(product.id) + '">ویرایش</button></td></tr>';
     }).join("");
   }
   function tablePanel(title, subtitle, headers, body, search = true, action = "") {
