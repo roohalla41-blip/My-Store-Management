@@ -40,3 +40,35 @@ body:not(.app-ready) .app-shell{display:none}
 .registration-help{font-size:10px;line-height:1.9;color:#89948e;margin:8px 0 13px}
 .registration-form .entry-option{margin-top:9px}
 @media(max-width:480px){.registration-grid{grid-template-columns:1fr}.registration-grid .field.full{grid-column:auto}}
+
+/* Professional A2 interface */
+:root{--ink:#152a22;--muted:#74847b;--line:#e1e9e4;--green:#176b50;--green-dark:#10533d;--green-soft:#e7f4ed;--radius:17px}
+body{background:#f3f6f4;color:var(--ink)}
+.sidebar{background:linear-gradient(180deg,#102b23,#16372d);padding:22px 14px 14px;box-shadow:-8px 0 30px #0b24180a}
+.brand{padding:0 9px 22px}.brand-mark{border-radius:14px;background:linear-gradient(145deg,#e7f7ed,#bfe6cf);box-shadow:0 5px 15px #061d1424}
+.workspace{border-radius:13px;margin-bottom:17px}.nav-caption{font-size:10px;letter-spacing:.35px;padding-top:13px}
+.nav-item{min-height:43px;padding:10px 12px;gap:11px;border-radius:11px;font-size:12px;font-weight:500}
+.nav-item.active{box-shadow:inset -3px 0 0 #2e916b;background:linear-gradient(90deg,#dff2e7,#eef8f1);color:#15513c;font-weight:700}
+.nav-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border:1px solid #ffffff12;border-radius:9px;background:#ffffff08;color:#c6d9cf}
+.nav-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-item.active .nav-icon{background:#d0eadb;border-color:#c0e0ce;color:#176b50}.nav-item:hover .nav-icon{background:#2a4a3d}
+.main-area{background:#f4f7f5}.topbar{height:72px;box-shadow:0 3px 14px #102c1c05;border-bottom-color:#e7ede9}
+.page-content{padding-top:29px}.welcome-row{align-items:center;padding:21px 22px;background:linear-gradient(115deg,#fff,#f8fbf9);border:1px solid #e3ebe6;border-radius:18px;box-shadow:0 5px 18px #173c2b05;margin-bottom:21px}
+.welcome-row h1{font-size:24px;font-weight:800;letter-spacing:-.35px}.eyebrow{letter-spacing:.15px;color:#478064}.page-subtitle{line-height:1.9}
+.welcome-actions{justify-content:flex-end;gap:8px}.button{min-height:41px;padding:10px 13px;border-radius:11px;font-size:11px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.button:active{transform:translateY(1px)}.button-primary{background:linear-gradient(135deg,#1b7858,#155a42);box-shadow:0 5px 12px #176b501a}.button-primary:hover{box-shadow:0 7px 16px #176b5028}
+.button-secondary{border-color:#dbe6df;box-shadow:0 2px 5px #173c2b04}.button-icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle}
+.stat-card,.panel,.table-panel,.module-card{border-color:#e3ebe6;box-shadow:0 4px 18px #173c2b04;transition:box-shadow .18s,border-color .18s}
+.stat-card:hover,.module-card:hover{border-color:#cbded2;box-shadow:0 8px 24px #173c2b0a}.stat-card{padding:19px 20px;border-radius:16px}
+.stat-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#e9f5ed;color:#1a7754}.stat-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.stat-icon.gold{background:#fff3dd;color:#a66d17}.stat-icon.blue{background:#eaf1fc;color:#426ca8}.stat-icon.rose{background:#fcecec;color:#b94e55}.stat-value{font-size:26px;font-weight:800}
+.panel{border-radius:17px}.panel-heading{margin-bottom:21px}.panel-heading h2{font-size:14px;font-weight:800}
+.quick-item{min-height:65px;border-color:#e7eee9;border-radius:13px;padding:12px 13px;transition:background .15s,border-color .15s,transform .15s}
+.quick-item:hover{transform:translateY(-1px);border-color:#bcd9c8;background:#f8fcf9}.quick-symbol{border-radius:12px;background:#e8f4ed;color:#176b50}
+.quick-copy strong{font-size:11px;font-weight:700}.table-panel{border-radius:16px}.table-header{padding:20px 21px}th{font-size:10px;letter-spacing:.1px}td{padding-top:13px;padding-bottom:13px}
+.product-thumb{width:38px;height:38px;border:1px solid #e3eee7;border-radius:11px;background:#edf6f0;color:#287b58}.product-thumb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.icon-button{width:38px;height:38px;border-radius:12px;transition:background .15s,border-color .15s}.entry-card{border:1px solid #e2ebe5;box-shadow:0 25px 70px #173c2b12}
+.entry-option{border-radius:14px;transition:border-color .15s,background .15s,transform .15s}.entry-option:hover{transform:translateY(-1px);border-color:#b7d8c5}
+.modal{border:1px solid #e3ebe6;box-shadow:0 28px 90px #07140f35}.field input,.field select,.field textarea{min-height:43px;border-radius:11px}.status{font-weight:700}
+@media(max-width:1150px){.welcome-row{align-items:flex-start;flex-direction:column}.welcome-actions{justify-content:flex-start}}
+@media(max-width:760px){.page-content{padding:17px 12px}.welcome-row{padding:17px 15px;border-radius:15px}.welcome-row h1{font-size:21px}.welcome-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.welcome-actions .button{width:100%;white-space:normal;min-height:44px}.nav-item{min-height:45px}.stats-grid{gap:10px}.stat-card{padding:14px;border-radius:14px}.stat-value{font-size:21px}}
