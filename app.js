@@ -319,7 +319,10 @@
     $("#cancelModal").addEventListener("click",closeForm);
     $("#modalBackdrop").addEventListener("click",e=>{if(e.target===$("#modalBackdrop"))closeForm();});
     document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#modalBackdrop").hidden)closeForm();});
-    $$(".nav-item").forEach(button=>button.addEventListener("click",()=>setView(button.dataset.view)));
+    $(".nav-item").forEach(button=>button.addEventListener("click",()=>{
+      setView(button.dataset.view);
+      if (button.dataset.action === "new-sale") openForm("sale");
+    }));
     $("#primaryAction").addEventListener("click",()=> {
       if (currentView==="settings") { $("#settingsForm")?.requestSubmit(); return; }
       if (currentView==="reports") { exportData(); return; }
