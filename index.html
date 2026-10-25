@@ -13,15 +13,25 @@
   <section class="entry-screen" id="entryScreen" aria-labelledby="entryTitle">
     <div class="entry-card">
       <div class="entry-brand"><span class="brand-mark">A2</span><span><strong>مدیریت فروشگاه</strong><small>انتخاب روش استفاده</small></span></div>
-      <p class="eyebrow">خوش آمدید</p>
-      <h1 id="entryTitle">چگونه می‌خواهید وارد شوید؟</h1>
-      <p class="entry-description">روش استفاده را انتخاب کنید. اطلاعات استفادهٔ رایگان فعلاً روی همین دستگاه نگهداری می‌شود.</p>
-      <button type="button" class="entry-option" id="offlineEntryButton">
-        <span class="entry-option-icon">▣</span><span class="entry-option-copy"><strong>استفاده رایگان</strong><small>ورود آفلاین · ذخیره اطلاعات روی همین دستگاه</small></span><span class="entry-option-arrow">←</span>
-      </button>
-      <button type="button" class="entry-option paid" id="onlineEntryButton">
-        <span class="entry-option-icon">☁</span><span class="entry-option-copy"><strong>استفاده پولی</strong><small>ورود آنلاین · حساب کاربری و ذخیره در پایگاه داده</small></span><span class="entry-option-arrow">←</span>
-      </button>
+      <p class="eyebrow">شروع کار با فروشگاه شما</p>
+      <h1 id="entryTitle">مشخصات فروشگاه را وارد کنید</h1>
+      <p class="entry-description">نام و مشخصات خود را بنویسید و پولی را که در فروشگاه استفاده می‌کنید انتخاب کنید. این تنظیمات در حالت رایگان روی همین دستگاه ذخیره می‌شود.</p>
+      <form id="registrationForm" class="registration-form">
+        <div class="registration-grid">
+          <div class="field full"><label for="regStoreName">نام فروشگاه *</label><input id="regStoreName" name="storeName" type="text" required maxlength="100" placeholder="مثلاً فروشگاه برادران احمدی" autocomplete="organization" /></div>
+          <div class="field"><label for="regFirstName">نام شما *</label><input id="regFirstName" name="firstName" type="text" required maxlength="60" placeholder="نام" autocomplete="given-name" /></div>
+          <div class="field"><label for="regLastName">نام خانوادگی *</label><input id="regLastName" name="lastName" type="text" required maxlength="60" placeholder="نام خانوادگی" autocomplete="family-name" /></div>
+          <div class="field full"><label for="regPhone">شماره همراه *</label><input id="regPhone" name="phone" type="tel" required maxlength="30" placeholder="شماره همراه با پیش‌شماره کشور" autocomplete="tel" /></div>
+          <div class="field full"><label for="regCurrency">واحد پول فروشگاه *</label><select id="regCurrency" name="currency" required><option value="افغانی">افغانی (AFN)</option><option value="تومان">تومان</option><option value="ریال">ریال ایران (IRR)</option><option value="دلار">دلار آمریکا (USD)</option><option value="یورو">یورو (EUR)</option></select></div>
+        </div>
+        <p class="registration-help">واحد پول انتخابی برای نمایش مبلغ‌ها در برنامه استفاده می‌شود؛ تبدیل نرخ ارز به‌صورت خودکار انجام نمی‌شود.</p>
+        <button type="submit" class="entry-option" id="offlineEntryButton">
+          <span class="entry-option-icon">▣</span><span class="entry-option-copy"><strong>استفاده رایگان</strong><small>ورود آفلاین · ذخیره اطلاعات روی همین دستگاه</small></span><span class="entry-option-arrow">←</span>
+        </button>
+        <button type="button" class="entry-option paid" id="onlineEntryButton">
+          <span class="entry-option-icon">☁</span><span class="entry-option-copy"><strong>استفاده پولی</strong><small>ورود آنلاین · حساب کاربری و ذخیره در پایگاه داده</small></span><span class="entry-option-arrow">←</span>
+        </button>
+      </form>
       <div class="entry-notice" id="onlineInfo" hidden role="status">اتصال Supabase هنوز تنظیم نشده است؛ ثبت‌نام آنلاین فعلاً فعال نیست. برای جلوگیری از گم‌شدن اطلاعات، تا زمان فعال‌شدن اتصال، از «استفاده رایگان» استفاده کنید و نسخهٔ پشتیبان بگیرید.</div>
       <p class="entry-footnote">توجه: ورود آنلاین تا زمان اتصال واقعی به Supabase اطلاعات را روی سرور ذخیره نمی‌کند.</p>
     </div>
