@@ -50,7 +50,7 @@
   }
   function setView(view) {
     currentView = view;
-    $$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+    $$$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === view));
     $("#breadcrumbTitle").textContent = labelFor(view);
     $("#pageTitle").textContent = view === "dashboard" ? "داشبورد مدیریتی" : labelFor(view);
     $("#pageSubtitle").textContent = ({
@@ -323,7 +323,7 @@
     $("#cancelModal").addEventListener("click",closeForm);
     $("#modalBackdrop").addEventListener("click",e=>{if(e.target===$("#modalBackdrop"))closeForm();});
     document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#modalBackdrop").hidden)closeForm();});
-    $(".nav-item").forEach(button=>button.addEventListener("click",()=>{
+    $$(".nav-item").forEach(button=>button.addEventListener("click",()=>{
       setView(button.dataset.view);
       if (button.dataset.action === "new-sale") openForm("sale");
     }));
