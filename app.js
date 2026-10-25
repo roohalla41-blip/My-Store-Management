@@ -285,6 +285,21 @@
   }
   function init() {
     $("#todayLabel").textContent = new Intl.DateTimeFormat("fa-IR",{dateStyle:"full"}).format(new Date());
+    $("#offlineEntryButton").addEventListener("click", () => {
+      $("#entryScreen").hidden = true;
+      document.body.classList.add("app-ready");
+      $("#modeStatusText").textContent = "استفاده رایگان · ذخیره روی دستگاه";
+      showToast("حالت رایگان فعال شد؛ اطلاعات در همین مرورگر ذخیره می‌شود.");
+    });
+    $("#onlineEntryButton").addEventListener("click", () => {
+      $("#onlineInfo").hidden = false;
+      $("#onlineInfo").scrollIntoView({behavior:"smooth", block:"nearest"});
+    });
+    $("#changeEntryMode").addEventListener("click", () => {
+      document.body.classList.remove("app-ready");
+      $("#entryScreen").hidden = false;
+      $("#onlineInfo").hidden = true;
+    });
     $("#entityForm").addEventListener("submit", handleFormSubmit);
     $("#closeModal").addEventListener("click",closeForm);
     $("#cancelModal").addEventListener("click",closeForm);
@@ -299,7 +314,7 @@
     });
     $("#exportButton").addEventListener("click",exportData);
     $("#menuToggle").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
-    $("#helpButton").addEventListener("click",()=>showToast("این نسخه اولیه است؛ داده‌ها فقط روی همین مرورگر ذخیره می‌شوند."));
+    $("#helpButton").addEventListener("click",()=>showToast("حالت رایگان: اطلاعات روی همین دستگاه است. پیش از پاک‌کردن داده‌های مرورگر، نسخه پشتیبان بگیرید."));
     setView("dashboard");
   }
   init();
