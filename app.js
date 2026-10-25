@@ -2,7 +2,7 @@
   "use strict";
   const STORE_KEY = "a2_store_management_v1";
   const defaultState = {
-    settings: { name: "فروشگاه اصلی", owner: "مدیر فروشگاه", currency: "افغانی", phone: "", address: "" },
+    settings: { name: "فروشگاه اصلی", owner: "مدیر فروشگاه", firstName: "", lastName: "", currency: "افغانی", phone: "", address: "" },
     products: [], customers: [], suppliers: [], sales: [], purchases: []
   };
   let state = loadState();
@@ -150,7 +150,7 @@
   function settingsView() {
     return '<section class="panel settings-form"><div class="panel-heading"><div><h2>مشخصات فروشگاه</h2><p>این اطلاعات برای شخصی‌سازی فضای کاری استفاده می‌شوند.</p></div></div><form id="settingsForm">' +
       field("نام فروشگاه","name",state.settings.name,"text",true) + field("نام مدیر","owner",state.settings.owner) +
-      field("واحد پول","currency",state.settings.currency,"select",true,[{value:"افغانی",label:"افغانی (AFN)"},{value:"تومان",label:"تومان"},{value:"دلار",label:"دلار (USD)"},{value:"یورو",label:"یورو (EUR)"}]) +
+      field("واحد پول","currency",state.settings.currency,"select",true,[{value:"افغانی",label:"افغانی (AFN)"},{value:"تومان",label:"تومان"},{value:"ریال",label:"ریال ایران (IRR)"},{value:"دلار",label:"دلار آمریکا (USD)"},{value:"یورو",label:"یورو (EUR)"}]) +
       field("شماره تماس","phone",state.settings.phone) + field("نشانی فروشگاه","address",state.settings.address,"text",false,null,true) +
       '<button class="button button-primary" type="submit">ذخیره تنظیمات</button></form><p class="chart-note">در این نسخه اطلاعات فقط در فضای ذخیره‌سازی همین مرورگر قرار می‌گیرند و هنوز به سرور یا حساب کاربری متصل نیستند.</p></section>';
   }
@@ -285,11 +285,25 @@
   }
   function init() {
     $("#todayLabel").textContent = new Intl.DateTimeFormat("fa-IR",{dateStyle:"full"}).format(new Date());
-    $("#offlineEntryButton").addEventListener("click", () => {
+    // Prefill registration details from the existing local store settings without touching inventory or transactions.
+    $("#regStoreName").value = state.settings.name || "";
+    $("#regFirstName").value = state.settings.firstName || (state.settings.owner && state.settings.owner !== "مدیر فروشگاه" ? state.settings.owner.split(" ")[0] : "");
+    $("#regLastName").value = state.settings.lastName || (state.settings.owner && state.settings.owner !== "مدیر فروشگاه" ? state.settings.owner.split(" ").slice(1).join(" ") : "");
+    $("#regPhone").value = state.settings.phone || "";
+    $("#regCurrency").value = state.settings.currency || "افغانی";
+    $("#registrationForm").addEventListener("submit", event => {
+      event.preventDefault();
+      if (!event.currentTarget.reportValidity()) return;
+      const profile = Object.fromEntries(new FormData(event.currentTarget).entries());
+      const fullName = [profile.firstName.trim(), profile.lastName.trim()].filter(Boolean).join(" ");
+      state.settings = { ...state.settings, name: profile.storeName.trim(), firstName: profile.firstName.trim(), lastName: profile.lastName.trim(), owner: fullName, phone: profile.phone.trim(), currency: profile.currency };
+      if (!persist()) return;
+      $(".workspace span:nth-child(2)").textContent = state.settings.name || "فروشگاه اصلی";
+      $(".profile-copy strong").textContent = state.settings.owner || "مدیر فروشگاه";
       $("#entryScreen").hidden = true;
       document.body.classList.add("app-ready");
       $("#modeStatusText").textContent = "استفاده رایگان · ذخیره روی دستگاه";
-      showToast("حالت رایگان فعال شد؛ اطلاعات در همین مرورگر ذخیره می‌شود.");
+      showToast("مشخصات فروشگاه ذخیره شد؛ اطلاعات در همین دستگاه نگهداری می‌شود.");
     });
     $("#onlineEntryButton").addEventListener("click", () => {
       $("#onlineInfo").hidden = false;
