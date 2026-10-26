@@ -78,7 +78,7 @@ No license has been added yet. Add an appropriate license before redistributing 
 
 - Added an operating-expense register with date, category, amount and note.
 - Reports now separate sales, recorded cost of goods sold, gross profit, registered operating expenses, and profit after those recorded expenses.
-- This remains a local prototype; no server sync, authentication, audited ledger, customer/supplier debt ledger, returns/tax handling, or cash/bank reconciliation is implemented yet. Data remains in this browser and can be lost if browser storage is cleared; export backups regularly.
+- This remains a local prototype; no server sync, authentication, audited ledger, invoice-by-invoice payment allocation, returns/tax handling, or cash/bank reconciliation is implemented yet. Data remains in this browser and can be lost if browser storage is cleared; export backups regularly.
 
 
 ## Customer and supplier balances
