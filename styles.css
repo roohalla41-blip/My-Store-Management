@@ -72,3 +72,20 @@ body{background:#f3f6f4;color:var(--ink)}
 .modal{border:1px solid #e3ebe6;box-shadow:0 28px 90px #07140f35}.field input,.field select,.field textarea{min-height:43px;border-radius:11px}.status{font-weight:700}
 @media(max-width:1150px){.welcome-row{align-items:flex-start;flex-direction:column}.welcome-actions{justify-content:flex-start}}
 @media(max-width:760px){.page-content{padding:17px 12px}.welcome-row{padding:17px 15px;border-radius:15px}.welcome-row h1{font-size:21px}.welcome-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.welcome-actions .button{width:100%;white-space:normal;min-height:44px}.nav-item{min-height:45px}.stats-grid{gap:10px}.stat-card{padding:14px;border-radius:14px}.stat-value{font-size:21px}}
+
+
+/* A2 professional accounting workspace */
+.report-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.report-box{min-height:112px;display:flex;flex-direction:column;justify-content:space-between;padding:19px 20px;border:1px solid #e0e8e3;border-radius:14px;background:linear-gradient(155deg,#fff 0%,#f8fbf9 100%)}
+.report-box small{font-size:11px;line-height:1.8;color:#6b7b72}
+.report-box strong{font-size:clamp(17px,2vw,24px);line-height:1.5;overflow-wrap:anywhere;font-variant-numeric:tabular-nums;color:#163e30}
+.table-panel{overflow:hidden;box-shadow:0 4px 18px #173b2a06}
+.table-header{gap:16px}
+.table-header h2,.panel-heading h2{letter-spacing:-.15px}
+.table-scroll tbody tr:hover{background:#f5faf7}
+.table-scroll td strong{font-weight:700}
+.status{white-space:nowrap}
+#formFields .field input,#formFields .field select,#formFields .field textarea{min-height:44px}
+#formFields .field textarea{min-height:86px}
+@media(max-width:900px){.report-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.report-summary{grid-template-columns:1fr}.report-box{min-height:88px;padding:15px 16px}.table-header{align-items:flex-start;flex-direction:column}.table-tools{width:100%;flex-wrap:wrap}}
