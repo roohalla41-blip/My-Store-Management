@@ -3,7 +3,7 @@
   const STORE_KEY = "a2_store_management_v1";
   const defaultState = {
     settings: { name: "فروشگاه اصلی", owner: "مدیر فروشگاه", firstName: "", lastName: "", currency: "افغانی", phone: "", address: "" },
-    products: [], customers: [], suppliers: [], sales: [], purchases: []
+    products: [], customers: [], suppliers: [], sales: [], purchases: [], expenses: []
   };
   let state = loadState();
   let currentView = "dashboard";
@@ -46,7 +46,7 @@
     return product ? Number(product.stock) || 0 : 0;
   }
   function labelFor(view) {
-    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", reports:"گزارش‌ها", settings:"تنظیمات فروشگاه" })[view] || "داشبورد";
+    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", expenses:"هزینه‌های فروشگاه", reports:"گزارش سود و زیان", settings:"تنظیمات فروشگاه" })[view] || "داشبورد";
   }
   function setView(view) {
     currentView = view;
@@ -64,7 +64,7 @@
       reports:"خلاصه‌ای از فعالیت‌های ثبت‌شده در فروشگاه مشاهده کنید.",
       settings:"اطلاعات پایه و واحد پول فروشگاه را تنظیم کنید."
     })[view];
-    $("#primaryAction").textContent = ({dashboard:"＋ ثبت کالای جدید",products:"＋ ثبت کالای جدید",inventory:"＋ ثبت کالای جدید",sales:"＋ ثبت فروش",purchases:"＋ ثبت خرید",customers:"＋ مشتری جدید",suppliers:"＋ تأمین‌کننده جدید",reports:"⇩ دریافت گزارش",settings:"ذخیره تنظیمات"})[view] || "＋ افزودن";
+    $("#primaryAction").textContent = ({dashboard:"＋ ثبت کالای جدید",products:"＋ ثبت کالای جدید",inventory:"＋ ثبت کالای جدید",sales:"＋ ثبت فروش",purchases:"＋ ثبت خرید",customers:"＋ مشتری جدید",suppliers:"＋ تأمین‌کننده جدید",expenses:"＋ ثبت هزینه",reports:"گزارش سود و زیان",settings:"ذخیره تنظیمات"})[view] || "＋ افزودن";
     $("#primaryAction").style.display = view === "reports" ? "none" : "inline-flex";
     render();
     $("#sidebar").classList.remove("open");
@@ -143,10 +143,19 @@
     return '<div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">' + statCard(c.title, number(c.items.length), kind === "sales" ? "↗" : kind === "purchases" ? "↙" : "♙", "تعداد ثبت‌شده") + statCard("جمع مبلغ", money(sum(c.items,"total")), "◈", "بر اساس اطلاعات ذخیره‌شده", "blue") + '</div>' +
       tablePanel(c.title,c.sub,c.headers,genericRows(c.items,kind),true,'<button class="button button-primary" data-open-form="' + (kind === "sales" || kind === "purchases" ? kind.slice(0,-1) : kind.slice(0,-1)) + '">＋ ثبت مورد جدید</button>');
   }
+
+  function expensesView() {
+    const rows = state.expenses.slice().reverse().map(x => '<tr><td>' + esc(x.date) + '</td><td><strong>' + esc(x.title) + '</strong></td><td>' + esc(x.category || 'سایر') + '</td><td>' + money(x.amount) + '</td><td>' + esc(x.note || '—') + '</td></tr>').join('') || '<tr><td colspan="5"><div class="empty-state"><strong>هزینه‌ای ثبت نشده است</strong><p>اجاره، برق، حقوق و سایر هزینه‌ها را ثبت کنید.</p></div></td></tr>';
+    return '<div class="stats-grid">' + statCard('مجموع هزینه‌ها', money(sum(state.expenses, 'amount')), '↙', 'جمع هزینه‌های ثبت‌شده') + statCard('تعداد اسناد هزینه', number(state.expenses.length), '▤', 'هزینه‌های عملیاتی') + '</div>' + tablePanel('دفتر هزینه‌ها', 'هزینه‌های عملیاتی برای محاسبه سود خالص', ['تاریخ','شرح هزینه','دسته‌بندی','مبلغ','یادداشت'], rows, true, '<button class="button button-primary" data-open-form="expense">＋ ثبت هزینه</button>');
+  }
+
   function reportsView() {
     const salesTotal = sum(state.sales,"total"), salesCost = sum(state.sales,"cost");
     const stockValue = state.products.reduce((t,p) => t + (Number(p.stock)||0)*(Number(p.cost)||0),0);
-    return '<div class="report-summary"><div class="report-box"><small>مجموع فروش ثبت‌شده</small><strong>' + money(salesTotal) + '</strong></div><div class="report-box"><small>سود ناخالص تخمینی فروش</small><strong>' + money(salesTotal-salesCost) + '</strong></div><div class="report-box"><small>ارزش بهای موجودی فعلی</small><strong>' + money(stockValue) + '</strong></div></div>' +
+    const expenseTotal = sum(state.expenses, "amount");
+    const grossProfit = salesTotal-salesCost;
+    const netProfit = grossProfit-expenseTotal;
+    return '<div class="report-summary"><div class="report-box"><small>مجموع فروش</small><strong>' + money(salesTotal) + '</strong></div><div class="report-box"><small>بهای تمام‌شده فروش</small><strong>' + money(salesCost) + '</strong></div><div class="report-box"><small>سود ناخالص</small><strong>' + money(grossProfit) + '</strong></div><div class="report-box"><small>هزینه‌های ثبت‌شده</small><strong>' + money(expenseTotal) + '</strong></div><div class="report-box"><small>سود/زیان پس از هزینه‌ها</small><strong>' + money(netProfit) + '</strong></div><div class="report-box"><small>ارزش بهای موجودی فعلی</small><strong>' + money(stockValue) + '</strong></div></div>' +
       '<section class="panel"><div class="panel-heading"><div><h2>گزارش وضعیت سامانه</h2><p>این گزارش فقط داده‌های واردشده در این مرورگر را محاسبه می‌کند.</p></div></div><div class="table-scroll"><table><tbody>' +
       [['تعداد کالاها',state.products.length],['تعداد مشتریان',state.customers.length],['تعداد تأمین‌کنندگان',state.suppliers.length],['تعداد فاکتورهای فروش',state.sales.length],['تعداد اسناد خرید',state.purchases.length]].map(r=>'<tr><td>'+r[0]+'</td><td><strong>'+number(r[1])+'</strong></td></tr>').join("") +
       '</tbody></table></div><p class="chart-note">توجه: سود نمایش‌داده‌شده مقدماتی است و هزینه‌های جانبی، مالیات، تخفیف‌های پیچیده و مرجوعی‌ها را در نظر نمی‌گیرد.</p></section>';
@@ -166,7 +175,7 @@
     return '<div class="field '+(full?'full':'')+'"><label>' + label + (required?' *':'') + '</label>' + control + '</div>';
   }
   function render() {
-    const views = { dashboard, products:productsView, inventory:inventoryView, sales:()=>standardList("sales"), purchases:()=>standardList("purchases"), customers:()=>standardList("customers"), suppliers:()=>standardList("suppliers"), reports:reportsView, settings:settingsView };
+    const views = { dashboard, products:productsView, inventory:inventoryView, sales:()=>standardList("sales"), purchases:()=>standardList("purchases"), customers:()=>standardList("customers"), suppliers:()=>standardList("suppliers"), expenses:expensesView, reports:reportsView, settings:settingsView };
     root.innerHTML = (views[currentView] || dashboard)();
     const search = $("#tableSearch");
     if (search) search.addEventListener("input", () => {
@@ -199,7 +208,8 @@
       customer:{title:"ثبت مشتری جدید",fields:[["name","نام مشتری","text",true,"نام کامل"],["phone","شماره تماس","tel",false,"شماره تلفن"],["email","ایمیل","email",false,""],["note","یادداشت","textarea",false,"یادداشت اختیاری"]]},
       supplier:{title:"ثبت تأمین‌کننده جدید",fields:[["name","نام تأمین‌کننده","text",true,"نام شخص یا شرکت"],["phone","شماره تماس","tel",false,"شماره تلفن"],["email","ایمیل","email",false,""],["note","یادداشت","textarea",false,"یادداشت اختیاری"]]},
       sale:{title:"ثبت فروش جدید",fields:[["productId","انتخاب کالا","select",true, state.products.map(p=>({value:p.id,label:p.name+" — موجودی: "+p.stock}))],["quantity","تعداد فروش","number",true,"1"],["customerId","مشتری","select",false,[{value:"",label:"مشتری نقدی / بدون انتخاب"},...state.customers.map(c=>({value:c.id,label:c.name}))]],["date","تاریخ","date",true,today()]]},
-      purchase:{title:"ثبت خرید جدید",fields:[["productId","انتخاب کالا","select",true,state.products.map(p=>({value:p.id,label:p.name}))],["quantity","تعداد خرید","number",true,"1"],["unitCost","بهای خرید هر واحد","number",true,"0"],["supplierId","تأمین‌کننده","select",false,[{value:"",label:"بدون انتخاب"},...state.suppliers.map(s=>({value:s.id,label:s.name}))]],["date","تاریخ","date",true,today()]]}
+      purchase:{title:"ثبت خرید جدید",fields:[["productId","انتخاب کالا","select",true,state.products.map(p=>({value:p.id,label:p.name}))],["quantity","تعداد خرید","number",true,"1"],["unitCost","بهای خرید هر واحد","number",true,"0"],["supplierId","تأمین‌کننده","select",false,[{value:"",label:"بدون انتخاب"},...state.suppliers.map(s=>({value:s.id,label:s.name}))]],["date","تاریخ","date",true,today()]]},
+      expense:{title:"ثبت هزینه فروشگاه",fields:[["title","شرح هزینه","text",true,"مثلاً کرایه دکان"],["category","دسته هزینه","select",true,[{value:"اجاره",label:"اجاره"},{value:"برق و آب",label:"برق و آب"},{value:"حقوق",label:"حقوق و دستمزد"},{value:"حمل‌ونقل",label:"حمل‌ونقل"},{value:"تعمیرات",label:"تعمیرات"},{value:"سایر",label:"سایر"}]],["amount","مبلغ هزینه","number",true,"0"],["date","تاریخ","date",true,today()],["note","یادداشت","textarea",false,"توضیحات اختیاری"]]}
     };
     return defs[type] || defs.product;
   }
@@ -238,11 +248,12 @@
     const form = new FormData(event.currentTarget);
     const data = Object.fromEntries(form.entries());
     const editId = event.currentTarget.dataset.editId;
-    const collection = ({product:"products",customer:"customers",supplier:"suppliers"})[modalType];
+    const collection = ({product:"products",customer:"customers",supplier:"suppliers",expense:"expenses"})[modalType];
     if (collection) {
       const record = { ...(editId ? state[collection].find(x=>x.id===editId) : {}), ...data, id:editId || uid(modalType.toUpperCase()) };
       if (modalType === "product") {
         for (const key of ["cost","price","stock","minStock"]) record[key] = Math.max(0, Number(data[key]) || 0);
+      } else if (modalType === "expense") { record.amount = Number(data.amount); if (!Number.isFinite(record.amount) || record.amount <= 0) { $("#formError").textContent="مبلغ هزینه باید بیشتر از صفر باشد."; return; }
         if (editId) {
           const old = state.products.find(p=>p.id===editId);
           if (old && Number(old.stock) !== record.stock) record.stock = Number(old.stock);
@@ -252,6 +263,7 @@
       if (editId) state[collection] = state[collection].map(x=>x.id===editId?record:x); else state[collection].push(record);
       persist(); closeForm(); render(); showToast(editId?"اطلاعات با موفقیت به‌روزرسانی شد.":"اطلاعات با موفقیت ثبت شد."); return;
     }
+    if (modalType === "expense") { state.expenses.push({id:uid("EXP"),title:data.title,category:data.category,amount:Number(data.amount),date:data.date||today(),note:data.note||""}); persist(); closeForm(); setView("expenses"); showToast("هزینه ثبت شد."); return; }
     if (modalType === "sale") {
       const product = state.products.find(p=>p.id===data.productId), quantity = Number(data.quantity);
       if (!product || !Number.isFinite(quantity) || quantity <= 0) { $("#formError").textContent="کالا و تعداد معتبر را انتخاب کنید."; return; }
