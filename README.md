@@ -72,3 +72,10 @@ No license has been added yet. Add an appropriate license before redistributing 
 - In free mode, these details are saved into the existing local state while preserving the current storage key `a2_store_management_v1` and existing products, customers, suppliers, sales, and purchases.
 - Currency choices include Afghan afghani (AFN), toman, Iranian rial (IRR), US dollar (USD), and euro (EUR). The choice changes displayed currency labels only; it does not convert existing or future amounts between currencies.
 - Paid/online registration remains unavailable until real Supabase authentication and database access are configured. The form does not claim to create an online account.
+
+
+## Operating expenses and profit/loss
+
+- Added an operating-expense register with date, category, amount and note.
+- Reports now separate sales, recorded cost of goods sold, gross profit, registered operating expenses, and profit after those recorded expenses.
+- This remains a local prototype; no server sync, authentication, audited ledger, customer/supplier debt ledger, returns/tax handling, or cash/bank reconciliation is implemented yet. Data remains in this browser and can be lost if browser storage is cleared; export backups regularly.
