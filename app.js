@@ -3,7 +3,7 @@
   const STORE_KEY = "a2_store_management_v1";
   const defaultState = {
     settings: { name: "فروشگاه اصلی", owner: "مدیر فروشگاه", firstName: "", lastName: "", currency: "افغانی", phone: "", address: "" },
-    products: [], customers: [], suppliers: [], sales: [], purchases: [], expenses: []
+    products: [], customers: [], suppliers: [], sales: [], purchases: [], expenses: [], payments: []
   };
   let state = loadState();
   let currentView = "dashboard";
@@ -46,7 +46,7 @@
     return product ? Number(product.stock) || 0 : 0;
   }
   function labelFor(view) {
-    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", expenses:"هزینه‌های فروشگاه", reports:"گزارش سود و زیان", settings:"تنظیمات فروشگاه" })[view] || "داشبورد";
+    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", expenses:"هزینه‌های فروشگاه", accounts:"حساب‌ها و بدهکاران", reports:"گزارش سود و زیان", settings:"تنظیمات فروشگاه" })[view] || "داشبورد";
   }
   function setView(view) {
     currentView = view;
@@ -64,7 +64,7 @@
       reports:"خلاصه‌ای از فعالیت‌های ثبت‌شده در فروشگاه مشاهده کنید.",
       settings:"اطلاعات پایه و واحد پول فروشگاه را تنظیم کنید."
     })[view];
-    $("#primaryAction").textContent = ({dashboard:"＋ ثبت کالای جدید",products:"＋ ثبت کالای جدید",inventory:"＋ ثبت کالای جدید",sales:"＋ ثبت فروش",purchases:"＋ ثبت خرید",customers:"＋ مشتری جدید",suppliers:"＋ تأمین‌کننده جدید",expenses:"＋ ثبت هزینه",reports:"گزارش سود و زیان",settings:"ذخیره تنظیمات"})[view] || "＋ افزودن";
+    $("#primaryAction").textContent = ({dashboard:"＋ ثبت کالای جدید",products:"＋ ثبت کالای جدید",inventory:"＋ ثبت کالای جدید",sales:"＋ ثبت فروش",purchases:"＋ ثبت خرید",customers:"＋ مشتری جدید",suppliers:"＋ تأمین‌کننده جدید",expenses:"＋ ثبت هزینه",accounts:"＋ ثبت دریافت/پرداخت",reports:"گزارش سود و زیان",settings:"ذخیره تنظیمات"})[view] || "＋ افزودن";
     $("#primaryAction").style.display = view === "reports" ? "none" : "inline-flex";
     render();
     $("#sidebar").classList.remove("open");
@@ -149,6 +149,15 @@
     return '<div class="stats-grid">' + statCard('مجموع هزینه‌ها', money(sum(state.expenses, 'amount')), '↙', 'جمع هزینه‌های ثبت‌شده') + statCard('تعداد اسناد هزینه', number(state.expenses.length), '▤', 'هزینه‌های عملیاتی') + '</div>' + tablePanel('دفتر هزینه‌ها', 'هزینه‌های عملیاتی برای محاسبه سود خالص', ['تاریخ','شرح هزینه','دسته‌بندی','مبلغ','یادداشت'], rows, true, '<button class="button button-primary" data-open-form="expense">＋ ثبت هزینه</button>');
   }
 
+
+  function customerBalance(id) { return Math.max(0,state.sales.filter(x=>x.customerId===id).reduce((t,x)=>t+Number(x.total||0)-Number(x.paidAmount??x.total),0)-state.payments.filter(p=>p.partyType==="customer"&&p.partyId===id).reduce((t,p)=>t+Number(p.amount||0),0)); }
+  function supplierBalance(id) { return Math.max(0,state.purchases.filter(x=>x.supplierId===id).reduce((t,x)=>t+Number(x.total||0)-Number(x.paidAmount??x.total),0)-state.payments.filter(p=>p.partyType==="supplier"&&p.partyId===id).reduce((t,p)=>t+Number(p.amount||0),0)); }
+  function accountsView() {
+    const customerRows=state.customers.map(c=>'<tr><td>'+esc(c.name)+'</td><td>'+money(state.sales.filter(x=>x.customerId===c.id).reduce((t,x)=>t+Number(x.total||0),0))+'</td><td><strong>'+money(customerBalance(c.id))+'</strong></td></tr>').join('')||'<tr><td colspan="3">مشتری ثبت نشده است.</td></tr>';
+    const supplierRows=state.suppliers.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+money(state.purchases.filter(x=>x.supplierId===s.id).reduce((t,x)=>t+Number(x.total||0),0))+'</td><td><strong>'+money(supplierBalance(s.id))+'</strong></td></tr>').join('')||'<tr><td colspan="3">تأمین‌کننده ثبت نشده است.</td></tr>';
+    return '<div class="stats-grid">'+statCard('طلب از مشتریان',money(state.customers.reduce((t,c)=>t+customerBalance(c.id),0)),'♙','مانده بدهی مشتریان')+statCard('بدهی به تأمین‌کنندگان',money(state.suppliers.reduce((t,s)=>t+supplierBalance(s.id),0)),'◈','مانده خریدهای نسیه')+'</div><section class="table-panel"><div class="table-header"><div><h2>حساب مشتریان</h2><p>مانده بدهی مشتریان</p></div><button class="button button-primary" data-open-form="payment">＋ ثبت دریافت/پرداخت</button></div><div class="table-scroll"><table><thead><tr><th>مشتری</th><th>مجموع فروش</th><th>مانده بدهی</th></tr></thead><tbody>'+customerRows+'</tbody></table></div></section><section class="table-panel" style="margin-top:16px"><div class="table-header"><div><h2>حساب تأمین‌کنندگان</h2><p>مانده بدهی فروشگاه</p></div></div><div class="table-scroll"><table><thead><tr><th>تأمین‌کننده</th><th>مجموع خرید</th><th>مانده بدهی</th></tr></thead><tbody>'+supplierRows+'</tbody></table></div></section>';
+  }
+
   function reportsView() {
     const salesTotal = sum(state.sales,"total"), salesCost = sum(state.sales,"cost");
     const stockValue = state.products.reduce((t,p) => t + (Number(p.stock)||0)*(Number(p.cost)||0),0);
@@ -175,7 +184,7 @@
     return '<div class="field '+(full?'full':'')+'"><label>' + label + (required?' *':'') + '</label>' + control + '</div>';
   }
   function render() {
-    const views = { dashboard, products:productsView, inventory:inventoryView, sales:()=>standardList("sales"), purchases:()=>standardList("purchases"), customers:()=>standardList("customers"), suppliers:()=>standardList("suppliers"), expenses:expensesView, reports:reportsView, settings:settingsView };
+    const views = { dashboard, products:productsView, inventory:inventoryView, sales:()=>standardList("sales"), purchases:()=>standardList("purchases"), customers:()=>standardList("customers"), suppliers:()=>standardList("suppliers"), expenses:expensesView, accounts:accountsView, reports:reportsView, settings:settingsView };
     root.innerHTML = (views[currentView] || dashboard)();
     const search = $("#tableSearch");
     if (search) search.addEventListener("input", () => {
@@ -207,8 +216,9 @@
       ]},
       customer:{title:"ثبت مشتری جدید",fields:[["name","نام مشتری","text",true,"نام کامل"],["phone","شماره تماس","tel",false,"شماره تلفن"],["email","ایمیل","email",false,""],["note","یادداشت","textarea",false,"یادداشت اختیاری"]]},
       supplier:{title:"ثبت تأمین‌کننده جدید",fields:[["name","نام تأمین‌کننده","text",true,"نام شخص یا شرکت"],["phone","شماره تماس","tel",false,"شماره تلفن"],["email","ایمیل","email",false,""],["note","یادداشت","textarea",false,"یادداشت اختیاری"]]},
-      sale:{title:"ثبت فروش جدید",fields:[["productId","انتخاب کالا","select",true, state.products.map(p=>({value:p.id,label:p.name+" — موجودی: "+p.stock}))],["quantity","تعداد فروش","number",true,"1"],["customerId","مشتری","select",false,[{value:"",label:"مشتری نقدی / بدون انتخاب"},...state.customers.map(c=>({value:c.id,label:c.name}))]],["date","تاریخ","date",true,today()]]},
-      purchase:{title:"ثبت خرید جدید",fields:[["productId","انتخاب کالا","select",true,state.products.map(p=>({value:p.id,label:p.name}))],["quantity","تعداد خرید","number",true,"1"],["unitCost","بهای خرید هر واحد","number",true,"0"],["supplierId","تأمین‌کننده","select",false,[{value:"",label:"بدون انتخاب"},...state.suppliers.map(s=>({value:s.id,label:s.name}))]],["date","تاریخ","date",true,today()]]},
+      sale:{title:"ثبت فروش جدید",fields:[["productId","انتخاب کالا","select",true, state.products.map(p=>({value:p.id,label:p.name+" — موجودی: "+p.stock}))],["quantity","تعداد فروش","number",true,"1"],["customerId","مشتری","select",false,[{value:"",label:"مشتری نقدی / بدون انتخاب"},...state.customers.map(c=>({value:c.id,label:c.name}))]],["date","تاریخ","date",true,today()],["paidAmount","مبلغ پرداخت‌شده (خالی = تسویه کامل)","number",false,""]]]},
+      purchase:{title:"ثبت خرید جدید",fields:[["productId","انتخاب کالا","select",true,state.products.map(p=>({value:p.id,label:p.name}))],["quantity","تعداد خرید","number",true,"1"],["unitCost","بهای خرید هر واحد","number",true,"0"],["supplierId","تأمین‌کننده","select",false,[{value:"",label:"بدون انتخاب"},...state.suppliers.map(s=>({value:s.id,label:s.name}))]],["date","تاریخ","date",true,today()],["paidAmount","مبلغ پرداخت‌شده (خالی = تسویه کامل)","number",false,""]]},
+      payment:{title:"ثبت دریافت یا پرداخت بدهی",fields:[["partyKey","حساب طرف مقابل","select",true,[...state.customers.map(c=>({value:"customer:"+c.id,label:"دریافت از مشتری: "+c.name})),...state.suppliers.map(s=>({value:"supplier:"+s.id,label:"پرداخت به تأمین‌کننده: "+s.name}))]],["amount","مبلغ دریافت/پرداخت","number",true,"0"],["date","تاریخ","date",true,today()],["note","یادداشت","textarea",false,"توضیح یا شماره رسید"]]}}
       expense:{title:"ثبت هزینه فروشگاه",fields:[["title","شرح هزینه","text",true,"مثلاً کرایه دکان"],["category","دسته هزینه","select",true,[{value:"اجاره",label:"اجاره"},{value:"برق و آب",label:"برق و آب"},{value:"حقوق",label:"حقوق و دستمزد"},{value:"حمل‌ونقل",label:"حمل‌ونقل"},{value:"تعمیرات",label:"تعمیرات"},{value:"سایر",label:"سایر"}]],["amount","مبلغ هزینه","number",true,"0"],["date","تاریخ","date",true,today()],["note","یادداشت","textarea",false,"توضیحات اختیاری"]]}
     };
     return defs[type] || defs.product;
@@ -248,6 +258,7 @@
     const form = new FormData(event.currentTarget);
     const data = Object.fromEntries(form.entries());
     const editId = event.currentTarget.dataset.editId;
+    if (modalType === "payment") { const bits=String(data.partyKey||"").split(":"); const partyType=bits[0], partyId=bits[1], amount=Number(data.amount); if(!partyId||!Number.isFinite(amount)||amount<=0){$("#formError").textContent="حساب و مبلغ معتبر را انتخاب کنید.";return;} const field=partyType==="customer"?"customerId":"supplierId"; const records=partyType==="customer"?state.sales:state.purchases; const due=records.filter(x=>x[field]===partyId).reduce((t,x)=>t+Number(x.total||0)-Number(x.paidAmount??x.total),0)-state.payments.filter(p=>p.partyType===partyType&&p.partyId===partyId).reduce((t,p)=>t+Number(p.amount||0),0); if(amount>Math.max(0,due)){ $("#formError").textContent="مبلغ از مانده بدهی بیشتر است: "+money(Math.max(0,due));return;} state.payments.push({id:uid("PAY"),partyType,partyId,amount,date:data.date||today(),note:data.note||""}); persist(); closeForm(); setView("accounts"); showToast("دریافت/پرداخت ثبت شد."); return; }
     const collection = ({product:"products",customer:"customers",supplier:"suppliers",expense:"expenses"})[modalType];
     if (collection) {
       const record = { ...(editId ? state[collection].find(x=>x.id===editId) : {}), ...data, id:editId || uid(modalType.toUpperCase()) };
@@ -269,7 +280,8 @@
       if (!product || !Number.isFinite(quantity) || quantity <= 0) { $("#formError").textContent="کالا و تعداد معتبر را انتخاب کنید."; return; }
       if (quantity > Number(product.stock)) { $("#formError").textContent="موجودی کافی نیست. موجودی فعلی: "+number(product.stock); return; }
       const total = quantity * Number(product.price);
-      state.sales.push({id:uid("SALE"),invoice:"S-"+String(state.sales.length+1).padStart(5,"0"),date:data.date||today(),productId:product.id,productName:product.name,quantity,total,cost:quantity*Number(product.cost),party:(state.customers.find(c=>c.id===data.customerId)||{}).name||"مشتری نقدی"});
+      const customer=state.customers.find(c=>c.id===data.customerId); const paidAmount=data.paidAmount===""?total:Number(data.paidAmount); if(!Number.isFinite(paidAmount)||paidAmount<0||paidAmount>total){$("#formError").textContent="مبلغ پرداخت‌شده باید بین صفر و مبلغ کل باشد.";return;}
+      state.sales.push({id:uid("SALE"),invoice:"S-"+String(state.sales.length+1).padStart(5,"0"),date:data.date||today(),productId:product.id,productName:product.name,quantity,total,cost:quantity*Number(product.cost),customerId:customer?.id||"",paidAmount,party:customer?.name||"مشتری نقدی"});
       product.stock = Number(product.stock)-quantity;
       persist(); closeForm(); setView("sales"); showToast("فروش ثبت و موجودی کالا به‌روزرسانی شد."); return;
     }
@@ -277,7 +289,8 @@
       const product = state.products.find(p=>p.id===data.productId), quantity = Number(data.quantity), unitCost = Number(data.unitCost);
       if (!product || !Number.isFinite(quantity) || quantity <= 0 || !Number.isFinite(unitCost) || unitCost < 0) { $("#formError").textContent="کالا، تعداد و بهای خرید را بررسی کنید."; return; }
       const total = quantity*unitCost;
-      state.purchases.push({id:uid("PUR"),invoice:"P-"+String(state.purchases.length+1).padStart(5,"0"),date:data.date||today(),productId:product.id,productName:product.name,quantity,total,cost:total,party:(state.suppliers.find(s=>s.id===data.supplierId)||{}).name||"بدون تأمین‌کننده"});
+      const supplier=state.suppliers.find(s=>s.id===data.supplierId); const paidAmount=data.paidAmount===""?total:Number(data.paidAmount); if(!Number.isFinite(paidAmount)||paidAmount<0||paidAmount>total){$("#formError").textContent="مبلغ پرداخت‌شده باید بین صفر و مبلغ کل باشد.";return;}
+      state.purchases.push({id:uid("PUR"),invoice:"P-"+String(state.purchases.length+1).padStart(5,"0"),date:data.date||today(),productId:product.id,productName:product.name,quantity,total,cost:total,supplierId:supplier?.id||"",paidAmount,party:supplier?.name||"بدون تأمین‌کننده"});
       product.stock = Number(product.stock)+quantity;
       product.cost = unitCost;
       persist(); closeForm(); setView("purchases"); showToast("خرید ثبت و موجودی کالا به‌روزرسانی شد."); return;
