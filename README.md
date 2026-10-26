@@ -79,3 +79,10 @@ No license has been added yet. Add an appropriate license before redistributing 
 - Added an operating-expense register with date, category, amount and note.
 - Reports now separate sales, recorded cost of goods sold, gross profit, registered operating expenses, and profit after those recorded expenses.
 - This remains a local prototype; no server sync, authentication, audited ledger, customer/supplier debt ledger, returns/tax handling, or cash/bank reconciliation is implemented yet. Data remains in this browser and can be lost if browser storage is cleared; export backups regularly.
+
+
+## Customer and supplier balances
+
+- Sales and purchase forms now support partial payment; leaving the payment field blank means fully paid.
+- The accounts page summarizes receivables from customers and payables to suppliers and allows recording additional receipts/payments against existing balances.
+- Newly recorded sales/purchases are linked to the selected customer/supplier. Old records without an ID are preserved but are not automatically attributed to a party. Payments are currently account-level summaries, not invoice-by-invoice allocation.
