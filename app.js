@@ -50,7 +50,7 @@
   }
   function setView(view) {
     currentView = view;
-    $$$(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === view));
+    $(".nav-item").forEach(button => button.classList.toggle("active", button.dataset.view === view));
     $("#breadcrumbTitle").textContent = labelFor(view);
     $("#pageTitle").textContent = view === "dashboard" ? "داشبورد مدیریتی" : labelFor(view);
     $("#pageSubtitle").textContent = ({
