@@ -36,9 +36,10 @@ const modules={
  tasks:{title:"Tasks & reminders",sub:"Keep daily operations visible and accountable.",features:[["Assigned tasks","Owner, due date, and priority."],["Recurring reminders","Daily, weekly, and monthly task patterns."],["Overdue queue","A clear list of late tasks."],["Activity trail","Preview task status changes."]]},
  help:{title:"Help center",sub:"Guides and support for the future product.",features:[["Getting started","Store setup and daily workflow guide."],["Module guides","Learn products, sales, inventory, and reports."],["Keyboard shortcuts","Plan faster desktop operation."],["Support details","Support channels will be configured later."]]}
 };
-const detectedLocale=(navigator.languages&&navigator.languages[0]||navigator.language||"en").toLowerCase();
-const uiLanguage=detectedLocale.startsWith("fa")?"fa":"en";
-const rtl=uiLanguage==="fa";
+// Temporary review mode: force Persian so the owner can inspect the current structure.
+// Device-language auto-detection can be restored after this visual review.
+const uiLanguage="fa";
+const rtl=true;
 const faText={
 "Workspace":"فضای کاری","Sales & customers":"فروش و مشتریان","Catalog & inventory":"کالاها و موجودی","Money & accounting":"صندوق و حسابداری","Business management":"مدیریت کسب‌وکار","System":"سیستم",
 "Overview":"نمای کلی","Activity feed":"فعالیت‌ها","Point of sale":"نقطه فروش","Sales & invoices":"فروش و فاکتورها","Returns & refunds":"مرجوعی و بازپرداخت","Customers & credit":"مشتریان و اعتبار","Quotes & orders":"پیشنهادها و سفارش‌ها","Products & services":"کالاها و خدمات","Stock & movements":"موجودی و جابه‌جایی","Purchasing":"خریدها","Suppliers":"تأمین‌کنندگان","Barcodes & labels":"بارکد و برچسب","Warehouses":"انبارها","Cash register":"صندوق نقدی","Bank accounts":"حساب‌های بانکی","Expenses":"مصارف","Accounting":"حسابداری","Receivables & payables":"دریافتنی‌ها و پرداختنی‌ها","Branches":"شعبه‌ها","Team & permissions":"کارمندان و دسترسی‌ها","Reports & analytics":"گزارش‌ها و تحلیل‌ها","Tasks & reminders":"وظایف و یادآورها","Notifications":"اعلان‌ها","Integrations":"اتصال‌ها","Settings":"تنظیمات","Help center":"مرکز راهنما",
