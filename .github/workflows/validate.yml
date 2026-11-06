@@ -21,7 +21,9 @@ jobs:
         with:
           node-version: "22"
       - name: Validate application JavaScript
-        run: node --check app.js
+        run: |
+          node --check app.js
+          node --check preview/preview.js
       - name: Verify required app-shell files
         run: |
           test -s index.html
@@ -31,6 +33,10 @@ jobs:
           test -s app.js
           test -s manifest.webmanifest
           test -s sw.js
+          test -s preview/index.html
+          test -s preview/preview.css
+          test -s preview/preview.js
+          grep -q 'INTERACTIVE SKELETON PREVIEW' preview/index.html
       - name: Verify skeleton documentation
         run: |
           test -s docs/PRODUCT_BLUEPRINT.md
