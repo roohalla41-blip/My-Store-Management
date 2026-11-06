@@ -89,3 +89,22 @@ body{background:#f3f6f4;color:var(--ink)}
 #formFields .field textarea{min-height:86px}
 @media(max-width:900px){.report-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.report-summary{grid-template-columns:1fr}.report-box{min-height:88px;padding:15px 16px}.table-header{align-items:flex-start;flex-direction:column}.table-tools{width:100%;flex-wrap:wrap}}
+
+
+/* A2 planned-module page shells: structure only, no live business operations */
+.planned-module{display:grid;gap:18px}
+.planned-hero{display:flex;align-items:flex-start;gap:17px;padding:24px;border:1px solid #dfeae3;border-radius:17px;background:linear-gradient(120deg,#fff,#f4faf6)}
+.planned-icon{width:54px;height:54px;flex:0 0 54px;display:grid;place-items:center;border-radius:15px;background:#e3f2e9;color:#176b50;font-size:26px;font-weight:800}
+.planned-status{display:inline-flex;padding:5px 9px;border-radius:999px;background:#fff4dc;color:#896019;font-size:10px;font-weight:700}
+.planned-hero h2{font-size:20px;margin:11px 0 7px;color:#173b2d}
+.planned-hero p,.planned-section-heading p{font-size:11px;line-height:2;color:#78867e;margin:0;max-width:760px}
+.planned-section-heading{display:flex;justify-content:space-between;align-items:flex-end}
+.planned-section-heading h3{font-size:14px;margin:0 0 5px;color:#263d32}
+.planned-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.planned-feature{min-height:118px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:17px;border:1px solid #e2ebe5;border-radius:14px;background:#fff}
+.planned-feature-number{font-size:10px;font-weight:800;color:#38805f;letter-spacing:.7px}
+.planned-feature strong{font-size:12px;line-height:1.8;color:#263d32}
+.planned-feature small{margin-top:auto;color:#98a29b;font-size:9px}
+.planned-note{padding:14px 16px;border:1px solid #e8e3d5;border-radius:12px;background:#fffdf7;color:#76633a;font-size:11px;line-height:2}
+@media(max-width:900px){.planned-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.planned-hero{padding:17px;gap:12px}.planned-icon{width:44px;height:44px;flex-basis:44px}.planned-hero h2{font-size:17px}.planned-feature-grid{grid-template-columns:1fr}.planned-feature{min-height:95px}}

@@ -1,0 +1,49 @@
+name: Validate A2 application
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main", "a2/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    name: JavaScript syntax and repository checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate application JavaScript
+        run: |
+          node --check app.js
+          node --check preview/preview.js
+      - name: Verify required app-shell files
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s design-system.css
+          grep -q './design-system.css' index.html
+          test -s app.js
+          test -s manifest.webmanifest
+          test -s sw.js
+          test -s preview/index.html
+          test -s preview/preview.css
+          test -s preview/preview.js
+          grep -q 'INTERACTIVE SKELETON PREVIEW' preview/index.html
+      - name: Verify skeleton documentation
+        run: |
+          test -s docs/PRODUCT_BLUEPRINT.md
+          test -s docs/SCREEN_MAP.md
+          test -s docs/TECHNICAL_ARCHITECTURE.md
+          test -s docs/DOMAIN_GLOSSARY.md
+          test -s docs/QUALITY_GATES.md
+          test -s docs/DESIGN_SYSTEM.md
+          test -s docs/PRODUCT_DECISIONS.md
+          test -s docs/LOCALE_STRATEGY.md
