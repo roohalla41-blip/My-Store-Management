@@ -1,18 +1,20 @@
 # A2 Locale and Direction Strategy
 
-## Confirmed default
-- Initial/default locale: `en` (English).
-- Supported next locale: `fa` (Persian), with RTL direction.
-- Locale and text direction are related but separate settings.
+## Device-language behavior in the preview
+- The preview reads the browser/device language from `navigator.languages[0]` and falls back to `navigator.language`.
+- A locale beginning with `fa` selects Persian (`fa`) and RTL layout.
+- Other locales currently fall back to English (`en`) and LTR layout.
+- The interface does not ask the user to choose a language and does not depend on a database.
+- User-entered names, sample customer identities, addresses, SKU values, invoice references, and other business data must not be translated.
 
 ## Implementation contract
-- Store UI copy in locale dictionaries keyed by stable identifiers; do not use translated sentences as program logic.
-- Use `lang` and `dir` on the document root based on the selected locale.
-- Use CSS logical properties (`margin-inline`, `padding-inline`, `inset-inline`, `text-align: start/end`) rather than left/right assumptions.
+- Set the document root `lang` and `dir` from the detected locale.
+- Keep text direction independent from the business currency and numeric values.
+- Prefer stable translation keys and locale dictionaries for production modules; the current preview still contains legacy text and uses a text-copy dictionary as a transitional bridge.
+- Use CSS logical properties (`margin-inline`, `padding-inline`, `inset-inline`, `text-align: start/end`) rather than left/right assumptions when expanding layouts.
 - Format dates, numbers, and currencies with `Intl.DateTimeFormat` and `Intl.NumberFormat` using explicit locale and currency context.
 - Keep stored numeric values independent from localized display strings.
-- Do not translate user-entered product names, customer names, addresses, notes, or document identifiers.
-- Language switching must not mutate or erase store records.
+- Language detection and translation must never mutate or erase store records.
 
 ## Key namespaces
 - `common.*`: save, cancel, close, search, filters, status, loading, retry.
@@ -27,5 +29,9 @@
 - `people.*`: employees, roles, permissions.
 - `settings.*`: store profile, locale, currency, tax, backup.
 
-## Current limitation
-This phase records the English-first decision and adds styling foundations. It does not yet claim that every existing Persian string has been translated or that a working language switcher exists. Full locale dictionaries and UI migration are a later skeleton task, still before database work.
+## Remaining work
+- The current preview includes Persian translations for the main navigation, dashboard, many module descriptions, common forms, modal messages, and dynamic notifications.
+- Some detailed table headings, sample status strings, longer descriptions, and less-used module content may still appear in English.
+- The preview needs a full pass using stable translation keys before it can be described as completely translated.
+- A persistent language selector is intentionally not included: device-language detection is the requested behavior for this phase.
+- No database, SQL, Supabase, authentication, payment, or external integration is used by this locale work.
