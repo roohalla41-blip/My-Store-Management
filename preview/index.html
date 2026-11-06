@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173d31"><meta name="description" content="A2 professional store management — interactive skeleton preview with sample data only.">
+<title>A2 Store Management · Skeleton Preview</title><link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+<div class="demo-ribbon"><span class="pulse"></span> INTERACTIVE SKELETON PREVIEW <span class="demo-note">Sample data · No database · No real transactions</span></div>
+<div class="app" id="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><div class="brand-logo">A2</div><div><strong>A2 Store</strong><small>MANAGEMENT SUITE</small></div><button id="closeNav" class="icon-btn close-nav" aria-label="Close navigation">×</button></div>
+  <div class="workspace"><div class="workspace-mark">N</div><div class="workspace-copy"><strong>Northstar Retail</strong><small>Demo workspace</small></div><span class="chevron">⌄</span></div>
+  <nav id="navigation" aria-label="Main navigation"></nav>
+  <div class="sidebar-bottom"><div class="avatar">JD</div><div class="user-copy"><strong>Jordan Davis</strong><small>Store owner · Demo</small></div><button class="icon-btn" data-view="settings" aria-label="Profile settings">⚙</button></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+<main class="main">
+<header class="topbar"><button class="icon-btn mobile-menu" id="menuToggle" aria-label="Open navigation">☰</button><div class="breadcrumbs"><span>Workspace</span><b>/</b><strong id="crumb">Overview</strong></div><div class="top-actions"><label class="global-search"><span>⌕</span><input id="globalSearch" placeholder="Search anything…" aria-label="Search anything"><kbd>⌘ K</kbd></label><button class="icon-btn top-icon" data-view="notifications" aria-label="Notifications">♧<i></i></button><button class="icon-btn top-icon" data-view="help" aria-label="Help">?</button><div class="top-avatar">JD</div></div></header>
+<section class="content">
+<div class="page-head"><div><div class="eyebrow" id="eyebrow">MONDAY, NOVEMBER 2, 2026 <span class="live-dot"></span> DEMO DATA</div><h1 id="pageTitle">Good morning, Jordan <span>✦</span></h1><p id="pageSubtitle">Here’s what’s happening across your store today.</p></div><div class="head-actions"><button class="btn btn-light" data-action="export">↧ <span>Export</span></button><button class="btn btn-primary" data-action="new-sale">＋ New sale</button></div></div>
+<div class="preview-notice"><span class="notice-icon">ⓘ</span><div><strong>Preview environment</strong><span>Explore every section using sample data. Changes made here are temporary and are not saved to a database.</span></div><button class="notice-dismiss" id="dismissNotice" aria-label="Dismiss notice">×</button></div>
+<div id="viewRoot" tabindex="-1"></div>
+<footer class="footer"><span>© A2 Store Management · Skeleton build 0.2</span><span><span class="footer-dot"></span> Demo mode <b>·</b> No database connected</span></footer>
+</section>
+</main>
+</div>
+<div class="modal-layer" id="modalLayer" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><span class="eyebrow">INTERACTIVE PREVIEW</span><h2 id="modalTitle">Quick action</h2></div><button class="icon-btn" id="modalClose" aria-label="Close">×</button></div><div id="modalBody"></div><div class="modal-foot"><button class="btn btn-light" id="modalCancel">Cancel</button><button class="btn btn-primary" id="modalConfirm">Preview action</button></div></section></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="./preview.js"></script>
+</body></html>
