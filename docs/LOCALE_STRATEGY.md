@@ -1,10 +1,9 @@
 # A2 Locale and Direction Strategy
 
-## Device-language behavior in the preview
-- The preview reads the browser/device language from `navigator.languages[0]` and falls back to `navigator.language`.
-- A locale beginning with `fa` selects Persian (`fa`) and RTL layout.
-- Other locales currently fall back to English (`en`) and LTR layout.
-- The interface does not ask the user to choose a language and does not depend on a database.
+## Current preview review mode
+- The preview is temporarily forced to Persian (`fa`) with RTL direction, regardless of the device language, so the owner can inspect the current structure in Persian.
+- This is a review-only presentation setting. Device-language auto-detection is deferred until after the Persian review.
+- No language setting is stored and no database is used.
 - User-entered names, sample customer identities, addresses, SKU values, invoice references, and other business data must not be translated.
 
 ## Implementation contract
