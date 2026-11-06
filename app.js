@@ -46,7 +46,7 @@
     return product ? Number(product.stock) || 0 : 0;
   }
   function labelFor(view) {
-    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", expenses:"هزینه‌های فروشگاه", accounts:"حساب‌ها و بدهکاران", reports:"گزارش سود و زیان", settings:"تنظیمات فروشگاه" })[view] || "داشبورد";
+    return ({ dashboard:"داشبورد", products:"کالاها و خدمات", inventory:"انبار و موجودی", sales:"فروش و فاکتورها", purchases:"خرید از تأمین‌کنندگان", customers:"مشتریان", suppliers:"تأمین‌کنندگان", expenses:"هزینه‌های فروشگاه", accounts:"حساب‌ها و بدهکاران", reports:"گزارش سود و زیان", settings:"تنظیمات فروشگاه", pos:"صندوق فروش (POS)", returns:"مرجوعی و بازپرداخت", cash:"صندوق نقد و بانک", accounting:"حسابداری حرفه‌ای", employees:"کارمندان و دسترسی‌ها", branches:"شعب و انبارها", barcodes:"بارکد و برچسب کالا", notifications:"اعلان‌ها و وظایف", integrations:"اتصال به سرویس‌ها" })[view] || "داشبورد";
   }
   function setView(view) {
     currentView = view;
@@ -62,10 +62,20 @@
       customers:"اطلاعات مشتریان را در یک فهرست منظم نگهداری کنید.",
       suppliers:"اطلاعات تأمین‌کنندگان و راه‌های تماس را مدیریت کنید.",
       reports:"خلاصه‌ای از فعالیت‌های ثبت‌شده در فروشگاه مشاهده کنید.",
-      settings:"اطلاعات پایه و واحد پول فروشگاه را تنظیم کنید."
+      settings:"اطلاعات پایه و واحد پول فروشگاه را تنظیم کنید.",
+      pos:"محیط یکپارچه صندوق، سبد خرید و تسویه فروش؛ در حال طراحی.",
+      returns:"مدیریت مرجوعی، تعویض کالا، اعتبار خرید و بازپرداخت؛ در حال طراحی.",
+      cash:"مدیریت صندوق‌های نقدی، جلسات صندوق، حساب‌های بانکی و مغایرت‌گیری؛ در حال طراحی.",
+      accounting:"دفتر کل، سندهای حسابداری و صورت‌های مالی؛ در حال طراحی.",
+      employees:"تعریف کارکنان، نقش‌ها و سطح دسترسی هر بخش؛ در حال طراحی.",
+      branches:"مدیریت شعب، انبارها و گزارش تجمیعی مکان‌ها؛ در حال طراحی.",
+      barcodes:"تولید و چاپ بارکد و برچسب قیمت کالا؛ در حال طراحی.",
+      notifications:"هشدار کمبود موجودی، وظایف روزانه و رویدادهای مهم؛ در حال طراحی.",
+      integrations:"اتصال‌های آینده به چاپگر، اسکنر و سرویس‌های بیرونی؛ در حال طراحی."
     })[view];
     $("#primaryAction").textContent = ({dashboard:"＋ ثبت کالای جدید",products:"＋ ثبت کالای جدید",inventory:"＋ ثبت کالای جدید",sales:"＋ ثبت فروش",purchases:"＋ ثبت خرید",customers:"＋ مشتری جدید",suppliers:"＋ تأمین‌کننده جدید",expenses:"＋ ثبت هزینه",accounts:"＋ ثبت دریافت/پرداخت",reports:"گزارش سود و زیان",settings:"ذخیره تنظیمات"})[view] || "＋ افزودن";
-    $("#primaryAction").style.display = view === "reports" ? "none" : "inline-flex";
+    const planned = ["pos","returns","cash","accounting","employees","branches","barcodes","notifications","integrations"].includes(view);
+    $("#primaryAction").style.display = (view === "reports" || planned) ? "none" : "inline-flex";
     render();
     $("#sidebar").classList.remove("open");
   }
@@ -183,9 +193,25 @@
     else control = '<input name="' + name + '" type="' + type + '" value="' + esc(value) + '" '+(required?'required':'')+' />';
     return '<div class="field '+(full?'full':'')+'"><label>' + label + (required?' *':'') + '</label>' + control + '</div>';
   }
+  const plannedModules = {
+    pos:{icon:"▣",items:["جست‌وجوی کالا و اسکن بارکد","سبد خرید چندقلمی و ویرایش تعداد","انتخاب مشتری و تخفیف","روش‌های پرداخت و رسید فروش","تعلیق سبد و ادامه فروش"]},
+    returns:{icon:"↩",items:["جست‌وجوی فاکتور اصلی","ثبت اقلام مرجوعی و دلیل","تعویض کالا و صدور اعتبار","بازپرداخت نقدی یا بانکی","ثبت اثر مرجوعی بر موجودی"]},
+    cash:{icon:"▤",items:["تعریف صندوق و مسئول صندوق","موجودی افتتاحیه و شمارش پایان شیفت","دریافت و پرداخت نقدی","انتقال بین صندوق و بانک","مغایرت‌گیری و گزارش گردش"]},
+    accounting:{icon:"∑",items:["سرفصل‌های حساب‌ها","ثبت سند روزنامه متوازن","دفتر کل و تراز آزمایشی","سود و زیان و ترازنامه","جریان وجوه نقد و بستن دوره"]},
+    employees:{icon:"♙",items:["فهرست کارکنان و مشخصات","نقش مالک، مدیر، صندوق‌دار و انباردار","ماتریس مجوز مشاهده و ویرایش","محدودیت دسترسی بر اساس شعبه","گزارش فعالیت کاربران"]},
+    branches:{icon:"⌂",items:["تعریف شعبه و نشانی","تعریف انبارهای هر شعبه","انتقال کالا بین مکان‌ها","موجودی تفکیک‌شده بر اساس شعبه","گزارش تجمیعی کسب‌وکار"]},
+    barcodes:{icon:"▥",items:["شناسه SKU و بارکد","پشتیبانی از انواع بارکد","طراحی برچسب کالا و قیمت","چاپ گروهی برچسب","آمادگی اتصال اسکنر"]},
+    notifications:{icon:"♧",items:["هشدار رسیدن موجودی به حد سفارش","فاکتورهای باز و سررسیدشده","وظایف روزانه و یادآورها","مرکز اعلان‌های خوانده‌نشده","تنظیم نوع و اولویت هشدار"]},
+    integrations:{icon:"⌘",items:["چاپگر فاکتور و رسید","اسکنر بارکد و تجهیزات فروشگاهی","ورودی و خروجی فایل استاندارد","درگاه‌های پرداخت (پس از بررسی)","اتصال‌های حسابداری و تجارت الکترونیک"]}
+  };
+  function plannedModuleView() {
+    const module = plannedModules[currentView];
+    if (!module) return dashboard();
+    return '<section class="planned-module"><div class="planned-hero"><div class="planned-icon">'+module.icon+'</div><div><span class="planned-status">در حال طراحی · بدون اتصال به دیتابیس</span><h2>'+esc(labelFor(currentView))+'</h2><p>این صفحه بخشی از اسکلت آینده A2 است. فعلاً فقط ساختار و محدوده امکانات مشخص شده و هیچ عملیات واقعی یا اطلاعات مالی در این بخش ثبت نمی‌شود.</p></div></div><div class="planned-section-heading"><div><h3>نقشه امکانات این بخش</h3><p>موارد زیر در مراحل بعدی طراحی و پیاده‌سازی خواهند شد.</p></div></div><div class="planned-feature-grid">'+module.items.map((item,index)=>'<article class="planned-feature"><span class="planned-feature-number">'+String(index+1).padStart(2,"0")+'</span><strong>'+item+'</strong><small>در نقشه راه محصول</small></article>').join("")+'</div><div class="planned-note"><strong>یادآوری:</strong> این بخش هنوز فعال نیست. در مرحله فعلی هیچ حساب کاربری، دیتابیس، پرداخت یا سرویس خارجی به آن متصل نشده است.</div></section>';
+  }
   function render() {
     const views = { dashboard, products:productsView, inventory:inventoryView, sales:()=>standardList("sales"), purchases:()=>standardList("purchases"), customers:()=>standardList("customers"), suppliers:()=>standardList("suppliers"), expenses:expensesView, accounts:accountsView, reports:reportsView, settings:settingsView };
-    root.innerHTML = (views[currentView] || dashboard)();
+    root.innerHTML = (views[currentView] || plannedModuleView)();
     const search = $("#tableSearch");
     if (search) search.addEventListener("input", () => {
       const query = search.value.trim().toLocaleLowerCase();
