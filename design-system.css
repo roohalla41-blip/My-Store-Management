@@ -1,0 +1,82 @@
+/* A2 Design System foundation — tokens and reusable patterns.
+   This stylesheet adds the next design layer without changing existing business logic. */
+:root {
+  color-scheme: light;
+  --a2-color-brand-950: #102a22;
+  --a2-color-brand-900: #173d31;
+  --a2-color-brand-700: #23634d;
+  --a2-color-brand-100: #e8f3ed;
+  --a2-color-neutral-950: #17231e;
+  --a2-color-neutral-700: #526159;
+  --a2-color-neutral-500: #78857d;
+  --a2-color-neutral-300: #d6dfd9;
+  --a2-color-neutral-200: #e6ece8;
+  --a2-color-neutral-100: #f4f7f5;
+  --a2-color-surface: #ffffff;
+  --a2-color-info: #356da8;
+  --a2-color-success: #28794f;
+  --a2-color-warning: #9a6717;
+  --a2-color-danger: #b33e3e;
+  --a2-space-1: 4px;
+  --a2-space-2: 8px;
+  --a2-space-3: 12px;
+  --a2-space-4: 16px;
+  --a2-space-5: 20px;
+  --a2-space-6: 24px;
+  --a2-space-8: 32px;
+  --a2-space-10: 40px;
+  --a2-radius-sm: 8px;
+  --a2-radius-md: 12px;
+  --a2-radius-lg: 16px;
+  --a2-radius-xl: 22px;
+  --a2-shadow-card: 0 2px 10px rgb(20 43 32 / 5%);
+  --a2-shadow-popover: 0 16px 48px rgb(15 35 25 / 16%);
+  --a2-content-max: 1600px;
+  --a2-sidebar-width: 264px;
+  --a2-control-height: 42px;
+  --a2-motion-fast: 140ms;
+  --a2-motion-normal: 220ms;
+}
+html { scroll-behavior: smooth; }
+body { min-width: 320px; }
+button, input, select, textarea { min-height: 0; }
+:where(button, input, select, textarea, a, [tabindex]):focus-visible {
+  outline: 3px solid #78ad91;
+  outline-offset: 3px;
+}
+:where(button, input, select, textarea) { accent-color: var(--a2-color-brand-700); }
+:where(.panel, .stat-card, .table-panel, .module-card) { box-shadow: var(--a2-shadow-card); }
+:where(.button, .icon-button, .nav-item, .filter-chip) {
+  transition: background-color var(--a2-motion-fast) ease,
+              border-color var(--a2-motion-fast) ease,
+              color var(--a2-motion-fast) ease,
+              box-shadow var(--a2-motion-fast) ease;
+}
+.ds-page-header { display:flex; align-items:flex-end; justify-content:space-between; gap:var(--a2-space-5); flex-wrap:wrap; }
+.ds-page-actions { display:flex; align-items:center; gap:var(--a2-space-2); flex-wrap:wrap; }
+.ds-toolbar { display:flex; align-items:center; gap:var(--a2-space-3); flex-wrap:wrap; }
+.ds-card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:var(--a2-space-4); }
+.ds-form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--a2-space-4); }
+.ds-field-hint { color:var(--a2-color-neutral-500); font-size:12px; line-height:1.6; }
+.ds-status { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; }
+.ds-status::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+.ds-status--success { color:var(--a2-color-success); background:#eaf5ee; }
+.ds-status--warning { color:var(--a2-color-warning); background:#fbf3e3; }
+.ds-status--danger { color:var(--a2-color-danger); background:#faeded; }
+.ds-status--info { color:var(--a2-color-info); background:#edf3fa; }
+.ds-notice { border:1px solid var(--a2-color-neutral-200); border-radius:var(--a2-radius-md); padding:var(--a2-space-4); background:var(--a2-color-neutral-100); color:var(--a2-color-neutral-700); font-size:13px; line-height:1.7; }
+.ds-skeleton { border-radius:var(--a2-radius-sm); background:linear-gradient(90deg,#edf1ee 25%,#f7f9f7 37%,#edf1ee 63%); background-size:400% 100%; animation:a2-shimmer 1.4s ease infinite; }
+@keyframes a2-shimmer { 0% { background-position:100% 0; } 100% { background-position:0 0; } }
+@media (max-width: 1100px) {
+  :root { --a2-sidebar-width: 238px; }
+  .ds-card-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  .ds-page-header { align-items:stretch; }
+  .ds-page-actions, .ds-page-actions .button { width:100%; }
+  .ds-form-grid, .ds-card-grid { grid-template-columns:minmax(0,1fr); }
+  .ds-toolbar > * { flex:1 1 100%; min-width:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
